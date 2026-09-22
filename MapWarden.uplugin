@@ -1,0 +1,36 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0.0",
+	"EngineVersion": "5.8.0",
+	"FriendlyName": "MapWarden - What Is Wrong With This Level",
+	"Description": "Your content folder can be spotless while your level is a mess, because they are two different questions. A linter asks whether an asset is named correctly and sits in the right folder. MapWarden asks what is actually standing in the map: how many of it there are, where it is, and what it is set to. The same static mesh can be flawless on disk and placed three times in exactly the same spot. Seven checks, each one switchable on its own and each one with its own threshold, because a tool with a fixed opinion is a tool that gets switched off on the first run. Duplicates: two actors of the same class at practically the same place - under a centimetre apart, same rotation, same scale. That is the Ctrl+D nobody moved, it costs memory and draw calls, and it is invisible in the viewport because it is standing exactly behind its twin. The search is the one part of this plugin that would be naively quadratic, so it is done on a grid whose cell size is the tolerance; on a level with tens of thousands of actors that is the difference between seconds and minutes. Collision that is missing where it was expected: a static mesh actor set to No Collision whose mesh does bring a collision model with it. The reverse is deliberately not a finding - a mesh with no collision model at all is a decision the person who made the mesh took, not the person who placed it. Mobility: lights and meshes left on Movable that demonstrably never move - no movement component, no simulating body, not driven by a sequence, not attached to something movable - which pays for shadow work that nothing ever uses. Out of bounds: the actor further from the centre of the level than the radius you set, the cube somebody lost while dragging. Silent triggers: overlap volumes with nothing bound to their overlap delegates and no reference from the level blueprint - and this one is a warning and can never be an error, because a binding can be made at runtime and the line says so in as many words. Dead references: soft object references on placed actors that no longer resolve to a package that exists. And default names, off by default, because how many StaticMeshActor_231 you can live with is taste, and taste does not belong in a gate unless you put it there. Two things this plugin cannot do, and both are on the report rather than buried in a readme. It cannot know what you meant: a crate with no collision may be decoration behind glass, so there are exemption lists by class, by level folder and by actor tag - and what was exempted is still counted and still shown as '3 excluded by settings', so the list can never quietly make a level look clean. And it checks the map that is loaded: with World Partition only the cells in memory exist, so the report names how many actors were checked and which levels they came from, and says in words that unloaded cells were not checked. Clean must never be allowed to mean nobody looked. The report is drawn on UCanvas from an AHUD, so it survives a cooked Shipping build, and every finding names the actor, the measured value and the threshold it broke, plus one plain sentence about what to do. In the editor, Tools > MapWarden runs the same checks with no game standing and selects the offending actor in the viewport for you. On a build server it is one command: MapWarden.Gate writes Saved/MapWarden/report.json and ends the process with 0 when clean, 1 for warnings and 2 for errors - the same three return codes as AssetWarden, LocaleGuard, BindGuard, ReadGuard, WidgetLedger, LoadLens and HeapCensus, so a project that already owns one of these has nothing new to learn. The rules themselves - AreDuplicates, IsOutOfBounds, Judge, Explain - are static functions over plain structs with no world behind them, which is why they are covered by automation tests and callable from your own tooling. Two modules: a runtime module that checks, judges and draws, and an editor module that adds the menu entry and the jump to the actor. The runtime never depends on the editor. Win64, full source, no third-party code.",
+	"Category": "Engine Tools",
+	"CreatedBy": "Silvan Teufel",
+	"CreatedByURL": "https://silvan.teufel-engineering.com",
+	"DocsURL": "https://wiki.teufel-engineering.com/en/MapWarden/documentation",
+	"MarketplaceURL": "",
+	"SupportURL": "mailto:teufelsilvan@gmail.com",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "MapWarden",
+			"Type": "Runtime",
+			"LoadingPhase": "PreDefault",
+			"PlatformAllowList": [
+				"Win64"
+			]
+		},
+		{
+			"Name": "MapWardenEditor",
+			"Type": "Editor",
+			"LoadingPhase": "PostEngineInit",
+			"PlatformAllowList": [
+				"Win64"
+			]
+		}
+	]
+}
