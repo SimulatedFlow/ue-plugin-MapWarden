@@ -180,7 +180,7 @@ namespace MapWardenCommands
 		// A report that could not be written, or a gate that found no level at all, must never be allowed to
 		// look like a gate that passed. Both leave with 2.
 		const uint8 Status = (bWritten && Report.bHasRun) ? static_cast<uint8>(ExitCode) : 2;
-		FPlatformMisc::RequestExitWithStatus(/*Force=*/false, Status, TEXT("MapWarden.Gate"));
+		FPlatformMisc::RequestExitWithStatus(/*Force=*/true, Status, TEXT("MapWarden.Gate"));
 	}
 
 	static FAutoConsoleCommand GGate(
